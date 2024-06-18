@@ -1,0 +1,23 @@
+*.class
+*.iml
+*.log*
+*.logs*
+logs
+log
+.idea
+.vscode
+target
+.DS_Store
+# Don't keep proprietary files in git:
+/src/commons/license.properties
+/src/quickstart/65/*
+!src/quickstart/65/.gitkeep
+/src/quickstart/cloud/*
+!src/quickstart/cloud/.gitkeep
+/src/packages/65/*
+!src/packages/65/.gitkeep
+/src/packages/cloud/*
+!src/packages/cloud/.gitkeep
+# Compiled documentation:
+README.html
+README.pdf

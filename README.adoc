@@ -1,0 +1,136 @@
+[.text-justify]
+= Dock Sling
+:reproducible:
+:doctype: article
+:author: Herman Ciechanowiec
+:email: herman@ciechanowiec.eu
+:chapter-signifier:
+:sectnums:
+:sectnumlevels: 5
+:sectanchors:
+:toc: left
+:toclevels: 5
+:icons: font
+// Docinfo is used for foldable TOC.
+// -> For full usage example see https://github.com/remkop/picocli
+:docinfo: shared,private
+:linkcss:
+:stylesdir: https://www.ciechanowiec.eu/linux_mantra/
+:stylesheet: adoc-css-style.css
+
+== Overview
+
+_Dock Sling_ is a program for setting up and managing an https://sling.apache.org/[Apache Sling] instance via Docker.
+
+== Usage
+[upperalpha]
+_Dock Sling_ provides a `docker-compose.yml` file and related artifacts, enabling developers to:
+[upperalpha]
+. build an Apache Sling image
+. run, start, and stop Apache Sling containers
+
+=== Image Build
+
+In order to build the _Apache Sling_ image follow the steps below.
+
+[upperalpha]
+. Clone the _Dock Sling_ source code repository:
++
+[source, bash]
+----
+git clone https://github.com/ciechanowiec/dock_sling
+----
+
+. Remove all preceding _Dock Sling_ containers, images, volumes and networks:
++
+[source, bash]
+----
+docker container stop --time 30 sling-base sling
+
+docker container remove --force sling-base sling
+
+docker image remove --force sling-base sling
+
+docker volume remove --force sling-data
+
+docker network rm sling-network
+----
+
+. Go to `src` directory in the _Dock Sling_ source code repository. Inside that directory, run the build defined in the `docker-compose.yml` file. As a result, two images will be built: `sling-base` and `sling`. The build might take ~4 minutes in total, depending on hardware capabilities:
++
+[source, bash]
+----
+cd "$pathToDockSlingSourceCodeRepository/src"
+
+docker compose build
+----
++
+[NOTE]
+====
+[upperroman]
+. In case of certain system setups, the command above should be hyphenated: `docker-compose`.
+. Add `--progress=plain` to the above command to see unfolded build output:
++
+[source, bash]
+----
+docker compose --progress=plain build
+----
+. It is possible to build independently only some specific image defined in the `docker-compose.yml` file by providing that image name to the build command in the following way:
++
+[source, bash]
+----
+docker compose build sling-base
+----
+====
+
+. Verify the build and make sure that all _Dock Sling_ images are available on host:
++
+[source, bash]
+----
+❯ docker images
+REPOSITORY          TAG       IMAGE ID       CREATED          SIZE
+sling-base          latest    49dd3148f5fd   5 minutes ago    1.46GB
+sling               latest    6c7eaa9a39b1   2 minutes ago    1.76GB
+----
+
+=== Container Run, Start & Stop
+[upperalpha]
+. In order to run a container with an Apache Sling instance _for the first time_, use the `docker-compose.yml` file located inside `src` directory in the _Dock Sling_ source code repository. As a parameter of the command provide the name of the respective service defined in the `docker-compose.yml` file:
++
+[source, bash]
+----
+docker compose up sling --detach
+----
++
+[NOTE]
+In case of certain system setups, the above command should be hyphenated: `docker-compose`.
+
+. After the first run of a container with an Apache Sling instance the container can be started and stopped via regular Docker commands by providing the respective container name:
++
+[source, bash]
+----
+docker start sling
+docker stop sling
+----
+
+=== Mobile Volumes
+[upperalpha]
+. Persistence layer of the Apache Sling instance is linked to `/opt/sling/launcher` path inside the container. That path is a mount point for `sling-data` volume respectively, physically stored on a host at `/var/lib/docker/volumes` and managed by Docker. It means that the persistence layer of the Apache Sling instance is separated from the application.
+
+. If `sling-data` volume doesn't exist when a container with an Apache Sling instance is run for the first time, then that volume will be created and mounted to the container. However, if the volume does already exist, then no new volume will be created and the existing one will be reused, so that even to a new container the old volume with old persistence layer will be mounted. In order to avoid such reuse, before a new container is run for the first time, the respective volume should be priorly removed:
++
+[source, bash]
+----
+docker volume remove --force sling-data
+----
+
+. The described volume mechanism makes the Apache Sling persistence layer mobile, transferable and backupable. That mechanism can be used to set up remote and local identical environments.
+
+== License
+The program is subject to MIT No Attribution License
+
+Copyright © 2024 Herman Ciechanowiec
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so.
+
+The Software is provided 'as is', without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the Software or the use or other dealings in the Software.

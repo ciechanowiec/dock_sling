@@ -1,0 +1,50 @@
+services:
+  sling-base:
+    build:
+      context: .
+      dockerfile: 1_base/Dockerfile
+    image: sling-base:latest
+    container_name: sling-base
+    hostname: sling-base
+    networks:
+      - sling-network
+
+  sling:
+    build:
+      context: .
+      dockerfile: 2_sling/Dockerfile
+      args:
+        SLING_DIR: /opt/sling
+    environment:
+      SLING_DIR: /opt/sling
+    image: sling:latest
+    container_name: sling
+    volumes:
+      - type: volume
+        source: sling-data
+        target: /opt/sling/launcher
+    # exec is required in order to set the Java process as PID 1 inside the container, since Docker sends
+    # termination signals only to PID 1, and we need those signals to be handled by the java process:
+    entrypoint: [ "sh", "-c", "exec $$SLING_DIR/sling-starter.sh" ]
+    # Grace period should be long enough so that the JCR is closed correctly and doesn't get corrupted:
+    stop_grace_period: 300s
+    hostname: sling-author
+    networks:
+      - sling-network
+    ports:
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: host
+    depends_on:
+      - sling-base
+
+volumes:
+  sling-data:
+    name: "sling-data"
+
+networks:
+  sling-network:
+    driver: bridge
+    # This name is required to avoid name prefixing by Docker:
+    name: sling-network
