@@ -1,6 +1,7 @@
 FROM sling-base:latest
 
 ARG SLING_DIR
+ARG RUN_MODES
 
 WORKDIR ${SLING_DIR}
 

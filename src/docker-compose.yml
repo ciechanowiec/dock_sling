@@ -15,8 +15,10 @@ services:
       dockerfile: 2_sling/Dockerfile
       args:
         SLING_DIR: /opt/sling
+        RUN_MODES: basic,sling
     environment:
       SLING_DIR: /opt/sling
+      RUN_MODES: basic,sling
     image: sling:latest
     container_name: sling
     volumes:
