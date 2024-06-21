@@ -15,12 +15,14 @@ services:
       dockerfile: 2_sling/Dockerfile
       args:
         SLING_DIR: /opt/sling
-        RUN_MODES: basic,sling
+        # comma-separated, like: basic,sling
+        RUN_MODES:
         JAVA_DEBUG_PORT:
         EXTRA_JAVA_OPTS:
     environment:
       SLING_DIR: /opt/sling
-      RUN_MODES: basic,sling
+      # comma-separated, like: basic,sling
+      RUN_MODES:
       JAVA_DEBUG_PORT: 8081
       EXTRA_JAVA_OPTS:
     image: sling:latest
