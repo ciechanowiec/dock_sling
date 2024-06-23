@@ -4,7 +4,7 @@ SLING_DIR=${SLING_DIR:-/opt/sling}
 echo "[INFO] SLING_DIR=$SLING_DIR"
 RUN_MODES=${RUN_MODES:}
 echo "[INFO] RUN_MODES=$RUN_MODES"
-ENABLE_MULTI_VERSION_SUPPORT=${ENABLE_MULTI_VERSION_SUPPORT:-true}
+ENABLE_MULTI_VERSION_SUPPORT=${ENABLE_MULTI_VERSION_SUPPORT:-false}
 echo "[INFO] ENABLE_MULTI_VERSION_SUPPORT=$ENABLE_MULTI_VERSION_SUPPORT"
 
 # JAVA_OPTS are set similarly as in https://github.com/apache/sling-org-apache-sling-starter/blob/705420630579652acefe71bb5bdb6229f58ef30a/src/main/container/bin/launch.sh
