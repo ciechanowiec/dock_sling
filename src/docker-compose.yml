@@ -17,12 +17,16 @@ services:
         SLING_DIR: /opt/sling
         # comma-separated, like: basic,sling
         RUN_MODES:
+        # On multi-version support: https://sling.apache.org/documentation/bundles/osgi-installer.html#multi-version-support-1
+        ENABLE_MULTI_VERSION_SUPPORT: true
         JAVA_DEBUG_PORT:
         EXTRA_JAVA_OPTS:
     environment:
       SLING_DIR: /opt/sling
       # comma-separated, like: basic,sling
       RUN_MODES:
+      # On multi-version support: https://sling.apache.org/documentation/bundles/osgi-installer.html#multi-version-support-1
+      ENABLE_MULTI_VERSION_SUPPORT: true
       JAVA_DEBUG_PORT: 8081
       EXTRA_JAVA_OPTS:
     image: sling:latest
