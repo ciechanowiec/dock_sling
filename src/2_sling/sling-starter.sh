@@ -2,6 +2,8 @@
 
 SLING_DIR=${SLING_DIR:-/opt/sling}
 echo "[INFO] SLING_DIR=$SLING_DIR"
+HTTP_PORT="${ENABLE_MULTI_VERSION_SUPPORT:-8080}"
+echo "[INFO] HTTP_PORT=$HTTP_PORT"
 RUN_MODES=${RUN_MODES:}
 echo "[INFO] RUN_MODES=$RUN_MODES"
 ENABLE_MULTI_VERSION_SUPPORT=${ENABLE_MULTI_VERSION_SUPPORT:-false}
@@ -22,5 +24,6 @@ cd "$SLING_DIR" || exec 1
 # termination signals only to PID 1, and we need those signals to be handled by the java process:
 exec "$SLING_DIR/bin/launcher" \
      -D sling.run.modes="$RUN_MODES" \
+     -D org.osgi.service.http.port="$HTTP_PORT" \
      -D sling.installer.experimental.multiversion="$ENABLE_MULTI_VERSION_SUPPORT" \
      -f "$SLING_DIR/sling-12.far"
