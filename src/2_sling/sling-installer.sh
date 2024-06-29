@@ -5,6 +5,9 @@
 # - https://github.com/apache/sling-org-apache-sling-starter
 
 SLING_DIR=${SLING_DIR:-/opt/sling}
+echo "[INFO] SLING_DIR=$SLING_DIR"
+HTTP_PORT="${HTTP_PORT:-8080}"
+echo "[INFO] HTTP_PORT=$HTTP_PORT"
 mkdir --parents --verbose "$SLING_DIR"
 cd "$SLING_DIR" || exec 1
 
@@ -35,7 +38,7 @@ startSlingInBackground () {
 updateActualBundlesStatus () {
   echo ""
   echo "Updating actual bundles status..."
-  actualBundlesStatus=$(curl --verbose http://localhost:8080/system/health.json?tags=bundles)
+  actualBundlesStatus=$(curl --verbose http://localhost:"$HTTP_PORT"/system/health.json?tags=bundles)
 }
 
 waitUntilBundlesStatusMatch () {
@@ -61,8 +64,8 @@ waitUntilBundlesStatusMatch () {
 
 killSling () {
   echo "Sling process will be terminated..."
-  fuser -TERM --namespace tcp --kill 8080
-  while fuser 8080/tcp > /dev/null 2>&1; do
+  fuser -TERM --namespace tcp --kill "$HTTP_PORT"
+  while fuser "$HTTP_PORT"/tcp > /dev/null 2>&1; do
       echo "Latest logs:"
       tail -n 5 "$SLING_DIR/launcher/logs/error.log"
       echo "Waiting for Sling process to be terminated..."
